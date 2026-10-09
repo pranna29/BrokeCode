@@ -194,6 +194,7 @@ export interface IExpense {
   excludeFromBudget?: boolean;
   sourceRef?: string;
   anomalyStatus: IAnomalyStatus;
+  customOrder?: number;
   createdAt: string;
   updatedAt: string;
 }

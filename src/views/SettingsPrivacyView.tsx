@@ -10,6 +10,7 @@ import {
   Sliders,
   Check,
   AlertTriangle,
+  LogOut,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../services/api';
@@ -343,6 +344,27 @@ export const SettingsPrivacyView: React.FC = () => {
                 <span>Permanently Delete Account & Wipe Records</span>
               </button>
             </div>
+          </div>
+
+          {/* Explicit Sign Out / Logout */}
+          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 pb-3 border-b border-slate-100 dark:border-slate-800">
+              <LogOut className="w-4 h-4 text-amber-500" />
+              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
+                Account Session
+              </h3>
+            </div>
+            <p className="text-slate-500 text-xs leading-relaxed">
+              Sign out from this device. Your historical transactions, categories, budgets, and accounts remain securely saved in MongoDB.
+            </p>
+            <button
+              type="button"
+              onClick={logout}
+              className="w-full flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl bg-[#2B2B2B] hover:bg-black text-white font-bold text-xs transition cursor-pointer shadow-xs"
+            >
+              <LogOut className="w-4 h-4 text-[#0B6121]" />
+              <span>Log Out of BrokeCode</span>
+            </button>
           </div>
         </div>
       </div>

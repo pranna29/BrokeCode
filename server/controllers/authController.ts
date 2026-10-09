@@ -57,12 +57,15 @@ export class AuthController {
       const userProfile = newUser.toObject();
       delete (userProfile as any).password;
 
-      res.cookie('token', token, {
+      const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+        sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days persistent session
+        path: '/',
+      };
+
+      res.cookie('token', token, cookieOptions);
 
       res.status(201).json({
         success: true,
@@ -100,12 +103,15 @@ export class AuthController {
       const userProfile = user.toObject();
       delete (userProfile as any).password;
 
-      res.cookie('token', token, {
+      const cookieOptions = {
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 7 * 24 * 60 * 60 * 1000,
-      });
+        sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days persistent session
+        path: '/',
+      };
+
+      res.cookie('token', token, cookieOptions);
 
       res.status(200).json({
         success: true,
@@ -120,7 +126,12 @@ export class AuthController {
 
   public static async logout(_req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      res.clearCookie('token');
+      res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: (process.env.NODE_ENV === 'production' ? 'none' : 'lax') as 'none' | 'lax',
+        path: '/',
+      });
       res.status(200).json({ success: true, message: 'Logged out successfully' });
     } catch (err: any) {
       res.status(500).json({ success: false, message: err.message || 'Error logging out' });

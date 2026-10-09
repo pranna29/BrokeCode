@@ -80,7 +80,12 @@ export class ExpenseController {
       }
 
       const sortDir = sortOrder === 'asc' ? 1 : -1;
-      const sortObj: any = { [sortBy as string]: sortDir };
+      let sortObj: any;
+      if (sortBy === 'custom' || sortBy === 'customOrder') {
+        sortObj = { customOrder: 1, date: -1 };
+      } else {
+        sortObj = { [sortBy as string]: sortDir };
+      }
 
       const [expenses, total] = await Promise.all([
         Expense.find(query).sort(sortObj).skip(skip).limit(limitNum).lean(),
@@ -346,6 +351,41 @@ export class ExpenseController {
       });
     } catch (err: any) {
       res.status(500).json({ success: false, message: err.message || 'Error deleting expenses' });
+    }
+  }
+
+  /**
+   * Reorder expenses for custom ordering
+   */
+  public static async reorderExpenses(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const userId = req.userId;
+      const { orderedIds } = req.body;
+
+      if (!Array.isArray(orderedIds)) {
+        res.status(400).json({ success: false, message: 'orderedIds array is required.' });
+        return;
+      }
+
+      const bulkOps = orderedIds
+        .filter((id: string) => mongoose.Types.ObjectId.isValid(id))
+        .map((id: string, index: number) => ({
+          updateOne: {
+            filter: { _id: new mongoose.Types.ObjectId(id), userId: new mongoose.Types.ObjectId(userId) },
+            update: { $set: { customOrder: index } },
+          },
+        }));
+
+      if (bulkOps.length > 0) {
+        await Expense.bulkWrite(bulkOps);
+      }
+
+      res.status(200).json({
+        success: true,
+        message: 'Transactions reordered successfully.',
+      });
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: err.message || 'Error reordering expenses' });
     }
   }
 

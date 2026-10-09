@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Navigation, TabKey } from './components/Navigation';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { ExpenseModal } from './components/ExpenseModal';
+import { ReceiptScannerModal } from './components/ReceiptScannerModal';
 import { LandingAuthView } from './views/LandingAuthView';
 import { CalendarView } from './views/CalendarView';
 import { TransactionsView } from './views/TransactionsView';
@@ -12,7 +13,7 @@ import { BudgetsView } from './views/BudgetsView';
 import { AccountsView } from './views/AccountsView';
 import { GroupsView } from './views/GroupsView';
 import { SettingsView } from './views/SettingsView';
-import { IExpense } from './types';
+import { IExpense, ICategory } from './types';
 import { api } from './services/api';
 
 const AppContent: React.FC = () => {
@@ -24,13 +25,67 @@ const AppContent: React.FC = () => {
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [expenseToEdit, setExpenseToEdit] = useState<IExpense | null>(null);
   const [modalInitialDate, setModalInitialDate] = useState<string | undefined>(undefined);
+  const [scannedPrefillData, setScannedPrefillData] = useState<any | null>(null);
+
+  // Receipt Scanner State
+  const [isReceiptScannerOpen, setIsReceiptScannerOpen] = useState(false);
+  const [categoriesList, setCategoriesList] = useState<ICategory[]>([]);
+  const [recentExpenses, setRecentExpenses] = useState<IExpense[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      api.categories.list().then((res) => {
+        if (res.success) setCategoriesList(res.data);
+      }).catch(() => {});
+
+      api.expenses.list({ limit: 50 }).then((res) => {
+        if (res.success) setRecentExpenses(res.data);
+      }).catch(() => {});
+    }
+  }, [user, isExpenseModalOpen]);
+
+  const handleOpenAddExpense = () => {
+    setExpenseToEdit(null);
+    setScannedPrefillData(null);
+    setModalInitialDate(undefined);
+    setIsExpenseModalOpen(true);
+  };
+
+  const handleOpenAddExpenseWithDate = (dateStr: string) => {
+    setExpenseToEdit(null);
+    setScannedPrefillData(null);
+    setModalInitialDate(dateStr);
+    setIsExpenseModalOpen(true);
+  };
+
+  const handleOpenEditExpense = (expense: IExpense) => {
+    setExpenseToEdit(expense);
+    setScannedPrefillData(null);
+    setModalInitialDate(undefined);
+    setIsExpenseModalOpen(true);
+  };
+
+  const handleOpenScanReceipt = () => {
+    setIsReceiptScannerOpen(true);
+  };
+
+  const handleConfirmScannedReceipt = (data: any) => {
+    setExpenseToEdit(null);
+    setScannedPrefillData(data);
+    setModalInitialDate(data.date);
+    setIsExpenseModalOpen(true);
+  };
 
   const fetchUnreviewedCount = async () => {
     if (!user) return;
     try {
       const res = await api.anomalies.list({ reviewStatus: 'unreviewed', limit: 1 });
       if (res.success && res.summary) {
-        setUnreviewedCount(res.summary.severityCounts ? Object.values(res.summary.severityCounts).reduce((a, b) => a + b, 0) : res.summary.totalFlagged || 0);
+        setUnreviewedCount(
+          res.summary.severityCounts
+            ? Object.values(res.summary.severityCounts).reduce((a, b) => a + b, 0)
+            : res.summary.totalFlagged || 0
+        );
       }
     } catch (err) {
       // Ignore background badge error
@@ -42,24 +97,6 @@ const AppContent: React.FC = () => {
       fetchUnreviewedCount();
     }
   }, [user, activeTab]);
-
-  const handleOpenAddExpense = () => {
-    setExpenseToEdit(null);
-    setModalInitialDate(undefined);
-    setIsExpenseModalOpen(true);
-  };
-
-  const handleOpenAddExpenseWithDate = (dateStr: string) => {
-    setExpenseToEdit(null);
-    setModalInitialDate(dateStr);
-    setIsExpenseModalOpen(true);
-  };
-
-  const handleOpenEditExpense = (expense: IExpense) => {
-    setExpenseToEdit(expense);
-    setModalInitialDate(undefined);
-    setIsExpenseModalOpen(true);
-  };
 
   const handleSaveExpense = async (data: Partial<IExpense>) => {
     if (expenseToEdit) {
@@ -98,6 +135,7 @@ const AppContent: React.FC = () => {
         {/* Top Header Navbar */}
         <Navbar
           onOpenAddExpense={handleOpenAddExpense}
+          onOpenScanReceipt={handleOpenScanReceipt}
           onRefreshData={fetchUnreviewedCount}
           activeTab={activeTab}
         />
@@ -121,6 +159,7 @@ const AppContent: React.FC = () => {
           {activeTab === 'transactions' && (
             <TransactionsView
               onOpenAddExpense={handleOpenAddExpense}
+              onOpenScanReceipt={handleOpenScanReceipt}
               onEditExpense={handleOpenEditExpense}
               onNavigateTab={setActiveTab}
             />
@@ -141,10 +180,24 @@ const AppContent: React.FC = () => {
       {/* Global Modals & Indicators */}
       <ExpenseModal
         isOpen={isExpenseModalOpen}
-        onClose={() => setIsExpenseModalOpen(false)}
+        onClose={() => {
+          setIsExpenseModalOpen(false);
+          setScannedPrefillData(null);
+        }}
         onSave={handleSaveExpense}
         expenseToEdit={expenseToEdit}
         initialDate={modalInitialDate}
+        initialPrefillData={scannedPrefillData}
+        currencySymbol={user?.preferences?.currencySymbol || '₹'}
+      />
+
+      {/* Receipt Scanner Modal with Mandatory User Review */}
+      <ReceiptScannerModal
+        isOpen={isReceiptScannerOpen}
+        onClose={() => setIsReceiptScannerOpen(false)}
+        onConfirmReceipt={handleConfirmScannedReceipt}
+        categories={categoriesList}
+        recentExpenses={recentExpenses}
         currencySymbol={user?.preferences?.currencySymbol || '₹'}
       />
 

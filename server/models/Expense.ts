@@ -43,6 +43,7 @@ export interface IExpense extends Document {
   excludeFromBudget?: boolean;
   sourceRef?: string;
   anomalyStatus: IAnomalyStatus;
+  customOrder?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -124,6 +125,11 @@ const ExpenseSchema = new Schema<IExpense>(
     tags: {
       type: [String],
       default: [],
+    },
+    customOrder: {
+      type: Number,
+      default: 0,
+      index: true,
     },
     anomalyStatus: {
       isAnomaly: {

@@ -19,13 +19,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   const fetchCurrentUser = async () => {
-    const token = getStoredToken();
-    if (!token) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-
     try {
       const res = await api.auth.getMe();
       if (res.success && res.user) {
@@ -35,7 +28,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null);
       }
     } catch (err) {
-      console.warn('Failed to restore session:', err);
       removeStoredToken();
       setUser(null);
     } finally {
@@ -49,23 +41,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string) => {
     const res = await api.auth.login({ email, password });
-    if (res.success && res.token) {
-      setStoredToken(res.token);
+    if (res.success && res.user) {
+      if (res.token) {
+        setStoredToken(res.token);
+      }
       setUser(res.user);
     }
   };
 
   const register = async (email: string, password: string, name?: string, currency?: string, monthlyBudget?: number) => {
     const res = await api.auth.register({ email, password, name, currency, monthlyBudget });
-    if (res.success && res.token) {
-      setStoredToken(res.token);
+    if (res.success && res.user) {
+      if (res.token) {
+        setStoredToken(res.token);
+      }
       setUser(res.user);
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
     removeStoredToken();
-    api.auth.logout().catch(() => {});
+    try {
+      await api.auth.logout();
+    } catch {
+      // Ignore network failures on logout
+    }
     setUser(null);
   };
 

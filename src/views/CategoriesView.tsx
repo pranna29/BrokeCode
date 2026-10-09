@@ -20,8 +20,10 @@ import { useAuth } from '../context/AuthContext';
 const COMMON_EMOJIS = [
   '🍔', '🛒', '🚗', '🛍️', '🎓', '🏠', '💡', '💊',
   '🎬', '✈️', '💅', '🎁', '📱', '💸', '☕', '🍕',
-  '🏋️', '🐶', '📚', '⚡', '💻', '🎮', '🍸', '🏥',
-  '🚌', '🚕', '👶', '🎉', '🪴', '🛠️', '💼', '🏷️'
+  '🍜', '🥗', '🍰', '🍺', '🍸', '🚌', '🚕', '🚲',
+  '⛽', '👗', '👟', '💍', '🔌', '📶', '💧', '🧹',
+  '🏋️', '🧘', '🏥', '🦷', '🎮', '🎟️', '🎧', '📚',
+  '💻', '💼', '📝', '📦', '💰', '💳', '🏦', '🏷️'
 ];
 
 const COLOR_PALETTE = [
@@ -351,13 +353,23 @@ export const CategoriesView: React.FC = () => {
                 />
               </div>
 
-              {/* Emoji Picker */}
+              {/* Emoji Picker with Custom Input */}
               <div>
                 <div className="flex items-center justify-between mb-1">
                   <label className="block font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-[10px]">
                     Emoji Icon
                   </label>
-                  <span className="text-xl">{emoji}</span>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      maxLength={4}
+                      value={emoji}
+                      onChange={(e) => setEmoji(e.target.value || '🏷️')}
+                      className="w-12 text-center text-lg p-0.5 rounded-lg border border-[#E0DDDA] dark:border-slate-700 bg-white dark:bg-slate-800"
+                      title="Type or paste any custom emoji"
+                    />
+                    <span className="text-xl">{emoji}</span>
+                  </div>
                 </div>
                 <div className="grid grid-cols-8 gap-1.5 p-2 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-[#E0DDDA] dark:border-slate-700 max-h-32 overflow-y-auto">
                   {COMMON_EMOJIS.map((em) => (
@@ -365,7 +377,7 @@ export const CategoriesView: React.FC = () => {
                       key={em}
                       type="button"
                       onClick={() => setEmoji(em)}
-                      className={`h-8 w-8 flex items-center justify-center rounded-lg text-lg transition ${
+                      className={`h-8 w-8 flex items-center justify-center rounded-lg text-lg transition cursor-pointer ${
                         emoji === em
                           ? 'bg-[#0B6121] text-white scale-110 shadow-xs'
                           : 'hover:bg-slate-200 dark:hover:bg-slate-700'
@@ -377,19 +389,31 @@ export const CategoriesView: React.FC = () => {
                 </div>
               </div>
 
-              {/* Color Picker */}
+              {/* Color Picker with Palette and Custom Hex */}
               <div>
-                <label className="block font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1 text-[10px]">
-                  Color Accent
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="block font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider text-[10px]">
+                    Color Accent
+                  </label>
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-4 w-4 rounded-full border border-slate-300" style={{ backgroundColor: color }} />
+                    <input
+                      type="text"
+                      value={color}
+                      onChange={(e) => setColor(e.target.value)}
+                      className="w-20 text-[10px] font-mono px-1.5 py-0.5 rounded-md border border-[#E0DDDA] dark:border-slate-700 bg-white dark:bg-slate-800"
+                      placeholder="#0B6121"
+                    />
+                  </div>
+                </div>
                 <div className="flex items-center gap-2 flex-wrap">
                   {COLOR_PALETTE.map((c) => (
                     <button
                       key={c}
                       type="button"
                       onClick={() => setColor(c)}
-                      className={`h-6 w-6 rounded-full border-2 transition ${
-                        color === c ? 'border-[#2B2B2B] dark:border-white scale-110' : 'border-transparent hover:scale-105'
+                      className={`h-6 w-6 rounded-full border-2 transition cursor-pointer ${
+                        color.toLowerCase() === c.toLowerCase() ? 'border-[#2B2B2B] dark:border-white scale-110 shadow-xs' : 'border-transparent hover:scale-105'
                       }`}
                       style={{ backgroundColor: c }}
                     />

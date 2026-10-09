@@ -93,9 +93,28 @@ College students and early-career professionals often suffer from "financial lea
    - 1-click synthetic generator injecting 35+ realistic student transactions (dining, campus cafeteria, transit, subscriptions) with labelled anomalies (textbooks, surge rides, unintended SaaS bills).
 7. **PWA & Cross-Platform Ready**:
    - Installable PWA with manifest, standalone display mode, maskable and Apple touch icons, in-app install buttons, and offline banners.
-8. **Security & Privacy Controls**:
-   - User data export to JSON archive.
-   - Permanent account deletion cascading all database records.
+8. **Calculator-Style Mobile Transaction Entry**:
+   - Ultra-compact calculator popup with prominent currency display and 3-column numeric keypad (`7 8 9`, `4 5 6`, `1 2 3`, `. 0 ⌫`).
+   - Four primary fields: Amount, Payment Account, Category Emoji Grid, and optional Description.
+   - Decimal-safe monetary calculations with physical keyboard and keypad support.
+9. **Persistent Authenticated Sessions**:
+   - 30-day persistent sessions using Secure, HttpOnly cookies with `credentials: 'include'`.
+   - Automatic session restoration on refresh/reopen without repeated login prompts.
+   - Explicit logout option in Settings and navbar.
+10. **Bill & Receipt Scanning (OCR)**:
+   - Built-in camera capture and JPG, PNG, PDF receipt upload via client-side Tesseract OCR.
+   - Extracts amount, merchant, date, currency, and suggests category with duplicate detection.
+   - Mandatory approval flow: Opens calculator popup with extracted data prefilled for user confirmation.
+11. **Swipe Actions & Drag-and-Drop Reordering**:
+   - Mobile touch gestures: Swipe right to Edit, Swipe left to Delete (with confirmation/undo).
+   - Desktop and touch drag-and-drop manual transaction reordering with persistent MongoDB order storage (`/api/expenses/reorder`).
+   - Accessible Move Up/Down controls and sort presets (`Newest First`, `Oldest First`, `Highest Amount`, `Lowest Amount`, `Custom Order`).
+12. **Customizable Emoji Categories**:
+   - 14 predefined standard categories with emoji icons and consistent color indicators.
+   - Settings category management: Add, rename, custom emoji picker, color palette, safe deletion, and ordering.
+   - Historical transactions preserved upon category deletion.
+13. **Refined Brand Palette Authentication**:
+   - Dedicated authentication design utilizing Light Greige (`#E0DDDA`), Dark Charcoal (`#2B2B2B`), and Forest Green (`#0B6121`) preserving the original custom brand logo.
 
 ---
 

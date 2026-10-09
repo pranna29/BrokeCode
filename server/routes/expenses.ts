@@ -12,6 +12,7 @@ router.post('/', ExpenseController.createExpense);
 router.get('/export-csv', ExpenseController.exportCSV);
 router.post('/import-csv', ExpenseController.importCSV);
 router.post('/bulk-delete', ExpenseController.bulkDeleteExpenses);
+router.post('/reorder', ExpenseController.reorderExpenses);
 
 // Seed synthetic student transactions for testing
 router.post('/seed-demo', async (req: AuthenticatedRequest, res: Response) => {

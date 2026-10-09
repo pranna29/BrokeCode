@@ -10,6 +10,14 @@ interface CalculatorModalProps {
   expenseToEdit?: IExpense | null;
   currencySymbol?: string;
   initialDate?: string;
+  initialPrefillData?: {
+    amount?: number;
+    category?: string;
+    merchant?: string;
+    description?: string;
+    date?: string;
+    paymentMethod?: string;
+  } | null;
 }
 
 export const ExpenseModal: React.FC<CalculatorModalProps> = ({
@@ -19,6 +27,7 @@ export const ExpenseModal: React.FC<CalculatorModalProps> = ({
   expenseToEdit,
   currencySymbol = '₹',
   initialDate,
+  initialPrefillData,
 }) => {
   // 1. Amount input state
   const [amountStr, setAmountStr] = useState<string>('0');
@@ -93,6 +102,14 @@ export const ExpenseModal: React.FC<CalculatorModalProps> = ({
       setSelectedCategory(expenseToEdit.category || 'Food & Dining');
       setDescription(expenseToEdit.description || expenseToEdit.merchant || '');
       setTxDate(new Date(expenseToEdit.date).toISOString().slice(0, 10));
+    } else if (initialPrefillData) {
+      setTxType('expense');
+      setAmountStr(initialPrefillData.amount !== undefined ? String(initialPrefillData.amount) : '0');
+      const lastAccount = localStorage.getItem('brokecode_last_payment_account') || initialPrefillData.paymentMethod || 'upi';
+      setPaymentAccount(lastAccount);
+      setSelectedCategory(initialPrefillData.category || (categories[0]?.name || 'Food & Dining'));
+      setDescription(initialPrefillData.description || initialPrefillData.merchant || '');
+      setTxDate(initialPrefillData.date || initialDate || new Date().toISOString().slice(0, 10));
     } else {
       setTxType('expense');
       setAmountStr('0');
@@ -106,7 +123,7 @@ export const ExpenseModal: React.FC<CalculatorModalProps> = ({
     }
     setError(null);
     setSaveSuccess(false);
-  }, [expenseToEdit, isOpen, initialDate]);
+  }, [expenseToEdit, isOpen, initialDate, initialPrefillData]);
 
   if (!isOpen) return null;
 
@@ -264,11 +281,21 @@ export const ExpenseModal: React.FC<CalculatorModalProps> = ({
           </div>
         )}
 
-        {/* SECTION 1: PROMINENT FORMATTED AMOUNT DISPLAY */}
-        <div className="mt-4 rounded-2xl bg-white dark:bg-slate-800/80 border border-[#E0DDDA] dark:border-slate-700/80 p-4 text-center shadow-xs">
-          <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-            {txType === 'expense' ? 'Expense Amount' : 'Income Amount'}
-          </span>
+        {/* SECTION 1: PROMINENT FORMATTED AMOUNT DISPLAY WITH CLEAR BUTTON */}
+        <div className="mt-4 rounded-2xl bg-white dark:bg-slate-800/80 border border-[#E0DDDA] dark:border-slate-700/80 p-4 text-center shadow-xs relative">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
+              {txType === 'expense' ? 'Expense Amount' : 'Income Amount'}
+            </span>
+            <button
+              type="button"
+              onClick={() => handleKeypadPress('C')}
+              className="text-[11px] font-bold text-slate-400 hover:text-rose-600 transition px-2 py-0.5 rounded-md hover:bg-rose-50 dark:hover:bg-rose-950/40"
+              title="Clear Amount"
+            >
+              Clear (C)
+            </button>
+          </div>
           <div className="flex items-center justify-center gap-1 mt-1">
             <span className="text-2xl font-black text-slate-400 tabular-nums">
               {currencySymbol}
@@ -283,29 +310,17 @@ export const ExpenseModal: React.FC<CalculatorModalProps> = ({
           </div>
         </div>
 
-        {/* NUMERIC CALCULATOR KEYPAD */}
-        <div className="mt-3 grid grid-cols-4 gap-1.5 sm:gap-2">
-          {['7', '8', '9', 'C', '4', '5', '6', '⌫', '1', '2', '3', '.', '0'].map((key) => {
-            if (key === '0') {
-              return (
-                <button
-                  key={key}
-                  type="button"
-                  onClick={() => handleKeypadPress('0')}
-                  className="col-span-2 py-2.5 sm:py-3 rounded-xl bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 font-black text-base text-[#2B2B2B] dark:text-white border border-[#E0DDDA] dark:border-slate-700 shadow-xs transition"
-                >
-                  0
-                </button>
-              );
-            }
-            const isSpecial = key === 'C' || key === '⌫';
+        {/* NUMERIC CALCULATOR KEYPAD (EXACT 3-COLUMN LAYOUT) */}
+        <div className="mt-3 grid grid-cols-3 gap-2">
+          {['7', '8', '9', '4', '5', '6', '1', '2', '3', '.', '0', '⌫'].map((key) => {
+            const isBackspace = key === '⌫';
             return (
               <button
                 key={key}
                 type="button"
                 onClick={() => handleKeypadPress(key)}
-                className={`py-2.5 sm:py-3 rounded-xl active:scale-95 font-black text-base border transition shadow-xs flex items-center justify-center ${
-                  isSpecial
+                className={`py-3 rounded-xl active:scale-95 font-black text-base border transition shadow-xs flex items-center justify-center select-none cursor-pointer ${
+                  isBackspace
                     ? 'bg-amber-500/10 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-300 dark:border-amber-700/40 hover:bg-amber-500/20'
                     : 'bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 text-[#2B2B2B] dark:text-white border-[#E0DDDA] dark:border-slate-700'
                 }`}
@@ -325,7 +340,7 @@ export const ExpenseModal: React.FC<CalculatorModalProps> = ({
             <select
               value={paymentAccount}
               onChange={(e) => setPaymentAccount(e.target.value)}
-              className="w-full appearance-none rounded-xl border border-[#E0DDDA] dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2.5 text-xs font-semibold text-[#2B2B2B] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0B6121] transition shadow-xs"
+              className="w-full appearance-none rounded-xl border border-[#E0DDDA] dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2.5 text-xs font-semibold text-[#2B2B2B] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0B6121] transition shadow-xs cursor-pointer"
             >
               {accountList.map((acc) => (
                 <option key={acc.id} value={acc.type || acc.id}>
@@ -356,7 +371,7 @@ export const ExpenseModal: React.FC<CalculatorModalProps> = ({
                   key={cat._id}
                   type="button"
                   onClick={() => setSelectedCategory(cat.name)}
-                  className={`flex flex-col items-center justify-center p-2 rounded-xl transition text-center group border ${
+                  className={`flex flex-col items-center justify-center p-2 rounded-xl transition text-center group border cursor-pointer ${
                     isSelected
                       ? 'border-[#0B6121] bg-[#0B6121]/10 dark:bg-[#0B6121]/20 shadow-xs'
                       : 'border-transparent hover:bg-slate-100 dark:hover:bg-slate-700/60'
@@ -379,30 +394,41 @@ export const ExpenseModal: React.FC<CalculatorModalProps> = ({
           </div>
         </div>
 
-        {/* SECTION 4: DESCRIPTION (OPTIONAL) & DATE */}
-        <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-2">
-          <div className="sm:col-span-2">
-            <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-              Description <span className="font-normal text-slate-400">(optional)</span>
-            </label>
-            <input
-              type="text"
-              placeholder="Add a note (optional)"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full rounded-xl border border-[#E0DDDA] dark:border-slate-700 bg-white dark:bg-slate-800 px-3 py-2 text-xs text-[#2B2B2B] dark:text-white placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-[#0B6121] transition shadow-xs"
-            />
-          </div>
+        {/* SECTION 4: DESCRIPTION (OPTIONAL) */}
+        <div className="mt-4">
+          <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
+            Description <span className="font-normal text-slate-400">(optional)</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Add a note (optional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className="w-full rounded-xl border border-[#E0DDDA] dark:border-slate-700 bg-white dark:bg-slate-800 px-3.5 py-2.5 text-xs text-[#2B2B2B] dark:text-white placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-[#0B6121] transition shadow-xs"
+          />
+        </div>
 
-          <div>
-            <label className="block text-[11px] font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-1">
-              Date
+        {/* OPTIONAL EXPANDABLE ADVANCED OPTIONS (HIDDEN BY DEFAULT) */}
+        <div className="mt-2 text-right">
+          <button
+            type="button"
+            onClick={() => {
+              const el = document.getElementById('advanced-modal-options');
+              if (el) el.classList.toggle('hidden');
+            }}
+            className="text-[10px] font-semibold text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
+          >
+            Adjust Date or Advanced Details ▾
+          </button>
+          <div id="advanced-modal-options" className="hidden mt-2 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-[#E0DDDA] dark:border-slate-700 text-left">
+            <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">
+              Transaction Date
             </label>
             <input
               type="date"
               value={txDate}
               onChange={(e) => setTxDate(e.target.value)}
-              className="w-full rounded-xl border border-[#E0DDDA] dark:border-slate-700 bg-white dark:bg-slate-800 px-2 py-2 text-xs text-[#2B2B2B] dark:text-white focus:outline-hidden focus:ring-2 focus:ring-[#0B6121] transition shadow-xs"
+              className="w-full rounded-lg border border-[#E0DDDA] dark:border-slate-700 bg-white dark:bg-slate-800 px-2.5 py-1.5 text-xs text-[#2B2B2B] dark:text-white"
             />
           </div>
         </div>

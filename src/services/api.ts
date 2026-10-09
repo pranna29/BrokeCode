@@ -41,6 +41,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
 
   const response = await fetch(endpoint, {
     ...options,
+    credentials: 'include',
     headers,
   });
 
@@ -243,6 +244,11 @@ export const api = {
     delete: (id: string) =>
       request<{ success: boolean; message: string }>(`/api/expenses/${id}`, {
         method: 'DELETE',
+      }),
+    reorder: (orderedIds: string[]) =>
+      request<{ success: boolean; message: string }>('/api/expenses/reorder', {
+        method: 'POST',
+        body: JSON.stringify({ orderedIds }),
       }),
     bulkDelete: (ids: string[]) =>
       request<{ success: boolean; deletedCount: number }>('/api/expenses/bulk-delete', {

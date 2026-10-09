@@ -16,7 +16,7 @@ export function signToken(user: IUser): string {
       email: user.email,
     },
     JWT_SECRET,
-    { expiresIn: '7d' }
+    { expiresIn: '30d' }
   );
 }
 

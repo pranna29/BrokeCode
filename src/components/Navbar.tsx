@@ -5,6 +5,7 @@ import {
   Sun,
   Database,
   LogOut,
+  Camera,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { PWAInstallButton } from './PWAInstallButton';
@@ -13,11 +14,12 @@ import { api } from '../services/api';
 
 interface NavbarProps {
   onOpenAddExpense: () => void;
+  onOpenScanReceipt?: () => void;
   onRefreshData?: () => void;
   activeTab: string;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onOpenAddExpense }) => {
+export const Navbar: React.FC<NavbarProps> = ({ onOpenAddExpense, onOpenScanReceipt }) => {
   const { user, logout } = useAuth();
   const [isDark, setIsDark] = useState(false);
 
@@ -47,10 +49,22 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAddExpense }) => {
 
         {/* Action Controls */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Scan Bill Button */}
+          {onOpenScanReceipt && (
+            <button
+              onClick={onOpenScanReceipt}
+              className="flex items-center gap-1.5 rounded-lg border border-[#0B6121]/40 bg-[#0B6121]/10 hover:bg-[#0B6121]/20 active:scale-95 px-2.5 sm:px-3 py-1.5 text-xs font-bold text-[#0B6121] dark:text-emerald-400 shadow-xs transition cursor-pointer"
+              title="Scan bill or receipt using camera or image file"
+            >
+              <Camera className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Scan Bill</span>
+            </button>
+          )}
+
           {/* Record Expense Button */}
           <button
             onClick={onOpenAddExpense}
-            className="flex items-center gap-1.5 rounded-lg bg-[#0B6121] hover:bg-[#0B6121]/90 active:scale-95 px-3 py-1.5 text-xs font-bold text-white shadow-xs transition"
+            className="flex items-center gap-1.5 rounded-lg bg-[#0B6121] hover:bg-[#0B6121]/90 active:scale-95 px-3 py-1.5 text-xs font-bold text-white shadow-xs transition cursor-pointer"
           >
             <Plus className="w-4 h-4" />
             <span>Add Transaction</span>
