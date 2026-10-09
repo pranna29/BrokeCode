@@ -17,6 +17,8 @@ export interface IUser extends Document {
   currency: string;
   monthlyBudget: number;
   preferences: IUserPreferences;
+  resetPasswordToken?: string;
+  resetPasswordExpires?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -40,17 +42,24 @@ const UserSchema = new Schema<IUser>(
       type: String,
       required: [true, 'Name is required'],
       trim: true,
-      default: 'Student User',
+      default: 'SpendWise User',
     },
     currency: {
       type: String,
-      default: 'USD',
+      default: 'INR',
       trim: true,
     },
     monthlyBudget: {
       type: Number,
-      default: 800,
+      default: 25000,
       min: [0, 'Budget must be a non-negative number'],
+    },
+    resetPasswordToken: {
+      type: String,
+      index: true,
+    },
+    resetPasswordExpires: {
+      type: Date,
     },
     preferences: {
       sensitivity: {
@@ -74,7 +83,7 @@ const UserSchema = new Schema<IUser>(
       },
       currencySymbol: {
         type: String,
-        default: '$',
+        default: '₹',
       },
       notificationsEnabled: {
         type: Boolean,

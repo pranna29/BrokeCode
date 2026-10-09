@@ -18,6 +18,139 @@ export interface IUser {
   updatedAt: string;
 }
 
+export interface ICategory {
+  _id: string;
+  userId: string;
+  name: string;
+  emoji?: string;
+  color: string;
+  icon: string;
+  budget?: number;
+  order?: number;
+  isDefault: boolean;
+}
+
+export interface IPendingTransaction {
+  _id: string;
+  userId: string;
+  rawSms: string;
+  amount: number;
+  currency: string;
+  merchant: string;
+  date: string;
+  paymentRef?: string;
+  paymentMode: string;
+  direction: 'debit' | 'credit';
+  suggestedCategory: string;
+  status: 'pending' | 'added' | 'ignored';
+  confidence: number;
+  isDuplicateWarning: boolean;
+  createdAt: string;
+}
+
+export interface IGroupMember {
+  userId: string;
+  name: string;
+  email: string;
+  joinedAt: string;
+}
+
+export interface IGroup {
+  _id: string;
+  name: string;
+  description?: string;
+  currency: string;
+  creatorId: string;
+  inviteCode: string;
+  members: IGroupMember[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface IGroupExpense {
+  _id: string;
+  groupId: string;
+  description: string;
+  amount: number;
+  currency: string;
+  paidBy: string;
+  date: string;
+  category: string;
+  splitType: 'equal' | 'exact' | 'percentage';
+  splits: Array<{ userId: string; amount: number; percentage?: number }>;
+  createdAt: string;
+}
+
+export interface ISettlement {
+  _id: string;
+  groupId: string;
+  fromUserId: string;
+  toUserId: string;
+  amount: number;
+  currency: string;
+  date: string;
+  notes?: string;
+}
+
+export interface IFriendLoan {
+  _id: string;
+  userId: string;
+  friendName: string;
+  type: 'lent' | 'borrowed';
+  amount: number;
+  currency: string;
+  date: string;
+  notes?: string;
+  repayments: Array<{ amount: number; date: string; notes?: string }>;
+  status: 'active' | 'settled';
+}
+
+export interface ICalendarDay {
+  date: string;
+  total: number;
+  expenseTotal?: number;
+  incomeTotal?: number;
+  transactions: any[];
+  categories: Array<{ name: string; total: number; color: string }>;
+  anomalies: any[];
+}
+
+export interface ICalendarData {
+  year: number;
+  month: number;
+  totalMonthSpend: number;
+  totalMonthIncome?: number;
+  netBalance?: number;
+  highSpendingThreshold: number;
+  days: Record<string, ICalendarDay>;
+}
+
+export interface IPeriodReport {
+  view: 'weekly' | 'monthly' | 'annual';
+  startDate: string;
+  endDate: string;
+  totalExpenditure: number;
+  transactionCount: number;
+  avgPerDay: number;
+  highestDay: {
+    date: string;
+    amount: number;
+  };
+  categoryBreakdown: Array<{
+    category: string;
+    total: number;
+    count: number;
+    anomalyCount: number;
+    percentage: number;
+  }>;
+  previousPeriod: {
+    totalExpenditure: number;
+    percentageChange: number;
+  };
+  budgetUtilization: number | null;
+  anomalyCount: number;
+}
+
 export interface IAnomalyBaseline {
   median?: number;
   iqr?: number;
@@ -53,9 +186,13 @@ export interface IExpense {
   category: string;
   subcategory?: string;
   description?: string;
+  type?: 'expense' | 'income';
   paymentMethod: 'card' | 'cash' | 'upi' | 'bank_transfer' | 'crypto' | 'other';
   isRecurring: boolean;
   tags: string[];
+  isTransfer?: boolean;
+  excludeFromBudget?: boolean;
+  sourceRef?: string;
   anomalyStatus: IAnomalyStatus;
   createdAt: string;
   updatedAt: string;

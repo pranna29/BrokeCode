@@ -9,6 +9,10 @@ import authRoutes from './server/routes/auth.js';
 import expenseRoutes from './server/routes/expenses.js';
 import anomalyRoutes from './server/routes/anomalies.js';
 import analyticsRoutes from './server/routes/analytics.js';
+import categoryRoutes from './server/routes/categories.js';
+import smsRoutes from './server/routes/smsImport.js';
+import groupRoutes from './server/routes/groups.js';
+import loanRoutes from './server/routes/friendLoans.js';
 import { errorHandler } from './server/middleware/errorHandler.js';
 
 dotenv.config();
@@ -39,8 +43,8 @@ app.get('/api/health', (_req, res) => {
     timestamp: new Date().toISOString(),
     environment: isProduction ? 'production' : 'development',
     database: dbStatus,
-    version: '1.0.0',
-    service: 'BrokeCode API Engine',
+    version: '2.0.0',
+    service: 'SpendWise API Engine',
   });
 });
 
@@ -49,6 +53,10 @@ app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/anomalies', anomalyRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/sms', smsRoutes);
+app.use('/api/groups', groupRoutes);
+app.use('/api/loans', loanRoutes);
 
 // Centralized Error Handling for API routes
 app.use('/api', errorHandler);

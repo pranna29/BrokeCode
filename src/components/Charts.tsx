@@ -40,12 +40,12 @@ export const SpendingTrendChart: React.FC<TrendChartProps> = ({ data, currencySy
       >
         <defs>
           <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#6366f1" stop-opacity="0.35" />
-            <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0" />
+            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.35" />
+            <stop offset="100%" stopColor="#6366f1" stopOpacity="0.0" />
           </linearGradient>
           <linearGradient id="anomalyGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stop-color="#f43f5e" stop-opacity="0.8" />
-            <stop offset="100%" stop-color="#f43f5e" stop-opacity="0.2" />
+            <stop offset="0%" stopColor="#f43f5e" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#f43f5e" stopOpacity="0.2" />
           </linearGradient>
         </defs>
 

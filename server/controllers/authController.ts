@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import bcrypt from 'bcryptjs';
+import crypto from 'crypto';
 import { User } from '../models/User.js';
 import { Expense } from '../models/Expense.js';
 import { AuthenticatedRequest, signToken } from '../middleware/auth.js';
@@ -7,7 +8,7 @@ import { AuthenticatedRequest, signToken } from '../middleware/auth.js';
 export class AuthController {
   public static async register(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
-      const { email, password, name, currency = 'USD', monthlyBudget = 800 } = req.body;
+      const { email, password, name, currency = 'INR', monthlyBudget = 25000 } = req.body;
 
       if (!email || !password) {
         res.status(400).json({ success: false, message: 'Email and password are required.' });
@@ -28,18 +29,26 @@ export class AuthController {
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
+      const symbolMap: Record<string, string> = {
+        INR: '₹',
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        SGD: 'S$',
+      };
+
       const newUser = await User.create({
         email: email.toLowerCase().trim(),
         password: hashedPassword,
-        name: name || 'Student',
+        name: name || 'SpendWise User',
         currency,
-        monthlyBudget: Number(monthlyBudget) || 800,
+        monthlyBudget: Number(monthlyBudget) || 25000,
         preferences: {
           sensitivity: 'medium',
           minHistoryCount: 5,
           excludedCategories: [],
           theme: 'dark',
-          currencySymbol: currency === 'INR' ? '₹' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : '$',
+          currencySymbol: symbolMap[currency] || '₹',
           notificationsEnabled: true,
         },
       });
@@ -47,6 +56,13 @@ export class AuthController {
       const token = signToken(newUser);
       const userProfile = newUser.toObject();
       delete (userProfile as any).password;
+
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
 
       res.status(201).json({
         success: true,
@@ -84,6 +100,13 @@ export class AuthController {
       const userProfile = user.toObject();
       delete (userProfile as any).password;
 
+      res.cookie('token', token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000,
+      });
+
       res.status(200).json({
         success: true,
         message: 'Login successful',
@@ -92,6 +115,87 @@ export class AuthController {
       });
     } catch (err: any) {
       res.status(500).json({ success: false, message: err.message || 'Error logging in' });
+    }
+  }
+
+  public static async logout(_req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      res.clearCookie('token');
+      res.status(200).json({ success: true, message: 'Logged out successfully' });
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: err.message || 'Error logging out' });
+    }
+  }
+
+  public static async forgotPassword(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { email } = req.body;
+      if (!email) {
+        res.status(400).json({ success: false, message: 'Email is required' });
+        return;
+      }
+
+      const user = await User.findOne({ email: email.toLowerCase().trim() });
+      if (!user) {
+        // Return same message to prevent account enumeration
+        res.status(200).json({
+          success: true,
+          message: 'If an account exists with this email, a password reset token has been issued.',
+        });
+        return;
+      }
+
+      // Generate 32-byte hex reset token valid for 1 hour
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      user.resetPasswordToken = resetToken;
+      user.resetPasswordExpires = new Date(Date.now() + 3600000); // 1 hour
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: 'Password reset token generated successfully. In production, this is emailed securely.',
+        resetToken,
+      });
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: err.message || 'Error requesting password reset' });
+    }
+  }
+
+  public static async resetPassword(req: AuthenticatedRequest, res: Response): Promise<void> {
+    try {
+      const { token, newPassword } = req.body;
+      if (!token || !newPassword) {
+        res.status(400).json({ success: false, message: 'Reset token and new password are required' });
+        return;
+      }
+
+      if (newPassword.length < 6) {
+        res.status(400).json({ success: false, message: 'New password must be at least 6 characters' });
+        return;
+      }
+
+      const user = await User.findOne({
+        resetPasswordToken: token,
+        resetPasswordExpires: { $gt: new Date() },
+      });
+
+      if (!user) {
+        res.status(400).json({ success: false, message: 'Password reset token is invalid or has expired.' });
+        return;
+      }
+
+      const salt = await bcrypt.genSalt(10);
+      user.password = await bcrypt.hash(newPassword, salt);
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+
+      res.status(200).json({
+        success: true,
+        message: 'Password has been successfully reset. You can now log in with your new credentials.',
+      });
+    } catch (err: any) {
+      res.status(500).json({ success: false, message: err.message || 'Error resetting password' });
     }
   }
 
@@ -116,14 +220,28 @@ export class AuthController {
       const userId = req.userId;
       const { name, currency, monthlyBudget, preferences } = req.body;
 
+      const symbolMap: Record<string, string> = {
+        INR: '₹',
+        USD: '$',
+        EUR: '€',
+        GBP: '£',
+        SGD: 'S$',
+      };
+
       const updateData: any = {};
       if (name !== undefined) updateData.name = name.trim();
-      if (currency !== undefined) updateData.currency = currency.trim();
+      if (currency !== undefined) {
+        updateData.currency = currency.trim();
+        if (!preferences?.currencySymbol) {
+          updateData['preferences.currencySymbol'] = symbolMap[currency.trim()] || '₹';
+        }
+      }
       if (monthlyBudget !== undefined) updateData.monthlyBudget = Number(monthlyBudget);
       if (preferences) {
         updateData.preferences = {
           ...req.user?.preferences,
           ...preferences,
+          currencySymbol: symbolMap[currency || req.user?.currency || 'INR'] || preferences.currencySymbol || '₹',
         };
       }
 
@@ -148,6 +266,7 @@ export class AuthController {
       // Delete user document
       await User.findByIdAndDelete(userId);
 
+      res.clearCookie('token');
       res.status(200).json({
         success: true,
         message: 'Account and all associated records permanently removed.',
@@ -175,3 +294,4 @@ export class AuthController {
     }
   }
 }
+

@@ -5,23 +5,25 @@ import { Navigation, TabKey } from './components/Navigation';
 import { OfflineIndicator } from './components/OfflineIndicator';
 import { ExpenseModal } from './components/ExpenseModal';
 import { LandingAuthView } from './views/LandingAuthView';
-import { DashboardView } from './views/DashboardView';
-import { ExpensesView } from './views/ExpensesView';
-import { AnomalyCentreView } from './views/AnomalyCentreView';
-import { AnalyticsView } from './views/AnalyticsView';
-import { ImportExportView } from './views/ImportExportView';
-import { SettingsPrivacyView } from './views/SettingsPrivacyView';
+import { CalendarView } from './views/CalendarView';
+import { TransactionsView } from './views/TransactionsView';
+import { StatisticsView } from './views/StatisticsView';
+import { BudgetsView } from './views/BudgetsView';
+import { AccountsView } from './views/AccountsView';
+import { GroupsView } from './views/GroupsView';
+import { SettingsView } from './views/SettingsView';
 import { IExpense } from './types';
 import { api } from './services/api';
 
 const AppContent: React.FC = () => {
   const { user, loading } = useAuth();
-  const [activeTab, setActiveTab] = useState<TabKey>('dashboard');
+  const [activeTab, setActiveTab] = useState<TabKey>('calendar');
   const [unreviewedCount, setUnreviewedCount] = useState<number>(0);
 
   // Expense Modal State
   const [isExpenseModalOpen, setIsExpenseModalOpen] = useState(false);
   const [expenseToEdit, setExpenseToEdit] = useState<IExpense | null>(null);
+  const [modalInitialDate, setModalInitialDate] = useState<string | undefined>(undefined);
 
   const fetchUnreviewedCount = async () => {
     if (!user) return;
@@ -43,11 +45,19 @@ const AppContent: React.FC = () => {
 
   const handleOpenAddExpense = () => {
     setExpenseToEdit(null);
+    setModalInitialDate(undefined);
+    setIsExpenseModalOpen(true);
+  };
+
+  const handleOpenAddExpenseWithDate = (dateStr: string) => {
+    setExpenseToEdit(null);
+    setModalInitialDate(dateStr);
     setIsExpenseModalOpen(true);
   };
 
   const handleOpenEditExpense = (expense: IExpense) => {
     setExpenseToEdit(expense);
+    setModalInitialDate(undefined);
     setIsExpenseModalOpen(true);
   };
 
@@ -62,10 +72,10 @@ const AppContent: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-900 text-white">
+      <div className="flex min-h-screen items-center justify-center bg-[#2B2B2B] text-white">
         <div className="flex flex-col items-center gap-3">
-          <div className="h-9 w-9 animate-spin rounded-full border-3 border-indigo-500 border-t-transparent" />
-          <span className="text-xs font-semibold tracking-wider text-slate-400 uppercase">
+          <div className="h-9 w-9 animate-spin rounded-full border-3 border-[#0B6121] border-t-transparent" />
+          <span className="text-xs font-semibold tracking-wider text-[#E0DDDA] uppercase">
             Initializing BrokeCode...
           </span>
         </div>
@@ -83,7 +93,7 @@ const AppContent: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+    <div className="min-h-screen bg-[#faf9f8] dark:bg-slate-950 text-[#2B2B2B] dark:text-slate-100 flex flex-col justify-between selection:bg-[#0B6121] selection:text-white">
       <div>
         {/* Top Header Navbar */}
         <Navbar
@@ -101,28 +111,30 @@ const AppContent: React.FC = () => {
 
         {/* Main Content Area */}
         <main className="mx-auto max-w-7xl px-4 sm:px-6 pt-6 pb-20 md:pb-12">
-          {activeTab === 'dashboard' && (
-            <DashboardView
-              onNavigateTab={setActiveTab}
-              onOpenAddExpense={handleOpenAddExpense}
+          {activeTab === 'calendar' && (
+            <CalendarView
+              onOpenAddExpenseWithDate={handleOpenAddExpenseWithDate}
+              onEditExpense={handleOpenEditExpense}
             />
           )}
 
-          {activeTab === 'expenses' && (
-            <ExpensesView
+          {activeTab === 'transactions' && (
+            <TransactionsView
               onOpenAddExpense={handleOpenAddExpense}
               onEditExpense={handleOpenEditExpense}
               onNavigateTab={setActiveTab}
             />
           )}
 
-          {activeTab === 'anomalies' && <AnomalyCentreView />}
+          {activeTab === 'statistics' && <StatisticsView />}
 
-          {activeTab === 'analytics' && <AnalyticsView />}
+          {activeTab === 'budgets' && <BudgetsView />}
 
-          {activeTab === 'import-export' && <ImportExportView />}
+          {activeTab === 'accounts' && <AccountsView />}
 
-          {activeTab === 'settings' && <SettingsPrivacyView />}
+          {activeTab === 'groups' && <GroupsView />}
+
+          {activeTab === 'settings' && <SettingsView />}
         </main>
       </div>
 
@@ -132,14 +144,15 @@ const AppContent: React.FC = () => {
         onClose={() => setIsExpenseModalOpen(false)}
         onSave={handleSaveExpense}
         expenseToEdit={expenseToEdit}
-        currencySymbol={user?.preferences?.currencySymbol || '$'}
+        initialDate={modalInitialDate}
+        currencySymbol={user?.preferences?.currencySymbol || '₹'}
       />
 
       <OfflineIndicator />
 
       {/* Footer */}
-      <footer className="border-t border-slate-200/80 dark:border-slate-800/80 py-4 text-center text-[11px] text-slate-500 hidden md:block">
-        BrokeCode — Personal Expense Anomaly Detector • Full-Stack MERN Architecture
+      <footer className="border-t border-[#E0DDDA] dark:border-slate-800 py-4 text-center text-[11px] text-slate-500 hidden md:block">
+        BrokeCode — Personal Expense & Statistical Anomaly Manager • MERN Architecture
       </footer>
     </div>
   );

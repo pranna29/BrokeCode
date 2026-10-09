@@ -7,7 +7,6 @@ interface AuthContextType {
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, name?: string, currency?: string, monthlyBudget?: number) => Promise<void>;
-  demoLogin: () => Promise<void>;
   logout: () => void;
   updateProfile: (data: any) => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -64,26 +63,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const demoLogin = async () => {
-    const demoEmail = 'alex.student@brokecode.dev';
-    const demoPassword = 'StudentDemoPassword2025!';
-
-    try {
-      // Try login first
-      await login(demoEmail, demoPassword);
-    } catch {
-      // If user doesn't exist yet, register and seed
-      await register(demoEmail, demoPassword, 'Alex Rivera (CS Student)', 'USD', 750);
-      try {
-        await api.expenses.seedDemo();
-      } catch (seedErr) {
-        console.warn('Seed demo error:', seedErr);
-      }
-    }
-  };
-
   const logout = () => {
     removeStoredToken();
+    api.auth.logout().catch(() => {});
     setUser(null);
   };
 
@@ -105,7 +87,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         loading,
         login,
         register,
-        demoLogin,
         logout,
         updateProfile,
         refreshUser,

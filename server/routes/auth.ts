@@ -6,6 +6,9 @@ const router = Router();
 
 router.post('/register', AuthController.register);
 router.post('/login', AuthController.login);
+router.post('/logout', AuthController.logout);
+router.post('/forgot-password', AuthController.forgotPassword);
+router.post('/reset-password', AuthController.resetPassword);
 router.get('/me', requireAuth, AuthController.getMe);
 router.put('/profile', requireAuth, AuthController.updateProfile);
 router.delete('/account', requireAuth, AuthController.deleteAccount);

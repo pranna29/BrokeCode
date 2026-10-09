@@ -35,9 +35,13 @@ export interface IExpense extends Document {
   category: string;
   subcategory?: string;
   description?: string;
+  type?: 'expense' | 'income';
   paymentMethod: 'card' | 'cash' | 'upi' | 'bank_transfer' | 'crypto' | 'other';
   isRecurring: boolean;
   tags: string[];
+  isTransfer?: boolean;
+  excludeFromBudget?: boolean;
+  sourceRef?: string;
   anomalyStatus: IAnomalyStatus;
   createdAt: Date;
   updatedAt: Date;
@@ -58,7 +62,7 @@ const ExpenseSchema = new Schema<IExpense>(
     },
     currency: {
       type: String,
-      default: 'USD',
+      default: 'INR',
       trim: true,
     },
     date: {
@@ -89,14 +93,33 @@ const ExpenseSchema = new Schema<IExpense>(
       trim: true,
       default: '',
     },
+    type: {
+      type: String,
+      enum: ['expense', 'income'],
+      default: 'expense',
+      index: true,
+    },
     paymentMethod: {
       type: String,
       enum: ['card', 'cash', 'upi', 'bank_transfer', 'crypto', 'other'],
-      default: 'card',
+      default: 'upi',
     },
     isRecurring: {
       type: Boolean,
       default: false,
+    },
+    isTransfer: {
+      type: Boolean,
+      default: false,
+    },
+    excludeFromBudget: {
+      type: Boolean,
+      default: false,
+    },
+    sourceRef: {
+      type: String,
+      trim: true,
+      default: '',
     },
     tags: {
       type: [String],

@@ -15,6 +15,8 @@ export class ExpenseController {
         page = '1',
         limit = '15',
         category,
+        type,
+        paymentMethod,
         search,
         startDate,
         endDate,
@@ -34,6 +36,14 @@ export class ExpenseController {
 
       if (category && category !== 'all') {
         query.category = category;
+      }
+
+      if (type && type !== 'all') {
+        query.type = type;
+      }
+
+      if (paymentMethod && paymentMethod !== 'all') {
+        query.paymentMethod = paymentMethod;
       }
 
       if (search) {
@@ -105,8 +115,9 @@ export class ExpenseController {
         subcategory = '',
         description = '',
         date = new Date(),
-        currency = req.user?.currency || 'USD',
+        currency = req.user?.currency || 'INR',
         paymentMethod = 'card',
+        type = 'expense',
         isRecurring = false,
         tags = [],
       } = req.body;
@@ -116,17 +127,16 @@ export class ExpenseController {
         return;
       }
 
-      if (!merchant || !merchant.trim()) {
-        res.status(400).json({ success: false, message: 'Merchant name is required.' });
-        return;
-      }
-
       if (!category || !category.trim()) {
         res.status(400).json({ success: false, message: 'Category is required.' });
         return;
       }
 
-      const numAmount = Number(amount);
+      // If merchant not provided (simple calculator form), default to category or description
+      const finalMerchant = (merchant && merchant.trim()) ? merchant.trim() : (description && description.trim()) ? description.trim() : category.trim();
+
+      // Decimal-safe amount rounding to 2 decimal places to avoid floating point imprecision
+      const numAmount = Math.round(Number(amount) * 100) / 100;
       const parsedDate = new Date(date);
 
       // Fetch user's historical expenses for statistical evaluation
@@ -141,7 +151,7 @@ export class ExpenseController {
       const anomalyResult = AnomalyDetectorService.evaluateTransaction({
         targetAmount: numAmount,
         category: category.trim(),
-        merchant: merchant.trim(),
+        merchant: finalMerchant,
         date: parsedDate,
         historicalExpenses: history,
         sensitivity: req.user?.preferences?.sensitivity || 'medium',
@@ -154,10 +164,11 @@ export class ExpenseController {
         amount: numAmount,
         currency,
         date: parsedDate,
-        merchant: merchant.trim(),
+        merchant: finalMerchant,
         category: category.trim(),
         subcategory: subcategory.trim(),
         description: description.trim(),
+        type: type === 'income' ? 'income' : 'expense',
         paymentMethod,
         isRecurring: Boolean(isRecurring),
         tags: Array.isArray(tags) ? tags : [],
@@ -219,9 +230,15 @@ export class ExpenseController {
         return;
       }
 
-      const updatedAmount = updateData.amount !== undefined ? Number(updateData.amount) : existingExpense.amount;
+      const updatedAmount = updateData.amount !== undefined 
+        ? Math.round(Number(updateData.amount) * 100) / 100 
+        : existingExpense.amount;
       const updatedCategory = updateData.category !== undefined ? updateData.category.trim() : existingExpense.category;
-      const updatedMerchant = updateData.merchant !== undefined ? updateData.merchant.trim() : existingExpense.merchant;
+      const updatedMerchant = updateData.merchant !== undefined && updateData.merchant.trim() 
+        ? updateData.merchant.trim() 
+        : (updateData.description && updateData.description.trim())
+        ? updateData.description.trim()
+        : updatedCategory || existingExpense.merchant;
       const updatedDate = updateData.date !== undefined ? new Date(updateData.date) : existingExpense.date;
 
       // Re-evaluate anomaly status if amount, category, or merchant changed
