@@ -1,0 +1,8 @@
+{
+  "name": "BrokeCode — Personal Expense Anomaly Detector",
+  "description": "Production-ready full-stack MERN expense manager and explainable statistical anomaly detection engine for college students and personal finance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
