@@ -1,0 +1,6 @@
+{
+  "name": "BrokeCode — Personal Expense & Budget Manager",
+  "description": "Full-stack MERN personal finance application with calculator-style transaction entry, receipt scanning, interactive calendar, statistical anomaly detection, budget management, and group expense splitting.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

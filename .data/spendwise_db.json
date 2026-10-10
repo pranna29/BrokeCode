@@ -1,0 +1,598 @@
+{
+  "users": [
+    {
+      "id": "user-demo-001",
+      "email": "demo@spendwise.com",
+      "password": "$2b$10$5sThsWrfy9Yjj30MwzSOmOOT0/c9ivy5.8Yhg/v4NDx91pyzZGnlW",
+      "name": "Alex Johnson",
+      "preferences": {
+        "currency": "USD",
+        "currencySymbol": "$",
+        "sensitivity": "medium",
+        "theme": "light",
+        "monthlyBudget": 1500,
+        "lastSelectedAccountId": "acc-debit-1"
+      },
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "user-1791607509217-8bm6h",
+      "email": "pranna029@gmail.com",
+      "password": "$2b$10$JlL3csOSuEs1Jj5aFnGLnO79Xo9zBZXjdbeo4pZFjE5EwcF37rKCm",
+      "name": "Pranna",
+      "preferences": {
+        "currency": "INR",
+        "currencySymbol": "₹",
+        "sensitivity": "medium",
+        "theme": "light",
+        "monthlyBudget": 4000,
+        "lastSelectedAccountId": "acc-user-1791607509217-8bm6h-bank"
+      },
+      "createdAt": "2026-10-10T04:45:09.323Z"
+    }
+  ],
+  "categories": [
+    {
+      "id": "cat-user-demo-001-cat-food",
+      "name": "Food & Dining",
+      "emoji": "🍔",
+      "color": "#f97316",
+      "order": 0,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-groceries",
+      "name": "Groceries",
+      "emoji": "🛒",
+      "color": "#16a34a",
+      "order": 1,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-transport",
+      "name": "Transport",
+      "emoji": "🚗",
+      "color": "#2563eb",
+      "order": 2,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-shopping",
+      "name": "Shopping",
+      "emoji": "🛍️",
+      "color": "#ec4899",
+      "order": 3,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-education",
+      "name": "Education",
+      "emoji": "🎓",
+      "color": "#8b5cf6",
+      "order": 4,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-housing",
+      "name": "Rent & Housing",
+      "emoji": "🏠",
+      "color": "#d97706",
+      "order": 5,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-bills",
+      "name": "Bills & Utilities",
+      "emoji": "💡",
+      "color": "#06b6d4",
+      "order": 6,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-healthcare",
+      "name": "Healthcare",
+      "emoji": "💊",
+      "color": "#ef4444",
+      "order": 7,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-entertainment",
+      "name": "Entertainment",
+      "emoji": "🎬",
+      "color": "#a855f7",
+      "order": 8,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-travel",
+      "name": "Travel",
+      "emoji": "✈️",
+      "color": "#0284c7",
+      "order": 9,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-personal",
+      "name": "Personal Care",
+      "emoji": "💅",
+      "color": "#f43f5e",
+      "order": 10,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-gifts",
+      "name": "Gifts",
+      "emoji": "🎁",
+      "color": "#10b981",
+      "order": 11,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-subs",
+      "name": "Subscriptions",
+      "emoji": "📱",
+      "color": "#6366f1",
+      "order": 12,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-demo-001-cat-other",
+      "name": "Other",
+      "emoji": "💸",
+      "color": "#64748b",
+      "order": 13,
+      "userId": "user-demo-001"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-food",
+      "name": "Food & Dining",
+      "emoji": "🍔",
+      "color": "#f97316",
+      "order": 0,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-groceries",
+      "name": "Groceries",
+      "emoji": "🛒",
+      "color": "#16a34a",
+      "order": 1,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-transport",
+      "name": "Transport",
+      "emoji": "🚗",
+      "color": "#2563eb",
+      "order": 2,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-shopping",
+      "name": "Shopping",
+      "emoji": "🛍️",
+      "color": "#ec4899",
+      "order": 3,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-education",
+      "name": "Education",
+      "emoji": "🎓",
+      "color": "#8b5cf6",
+      "order": 4,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-housing",
+      "name": "Rent & Housing",
+      "emoji": "🏠",
+      "color": "#d97706",
+      "order": 5,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-bills",
+      "name": "Bills & Utilities",
+      "emoji": "💡",
+      "color": "#06b6d4",
+      "order": 6,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-healthcare",
+      "name": "Healthcare",
+      "emoji": "💊",
+      "color": "#ef4444",
+      "order": 7,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-entertainment",
+      "name": "Entertainment",
+      "emoji": "🎬",
+      "color": "#a855f7",
+      "order": 8,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-travel",
+      "name": "Travel",
+      "emoji": "✈️",
+      "color": "#0284c7",
+      "order": 9,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-personal",
+      "name": "Personal Care",
+      "emoji": "💅",
+      "color": "#f43f5e",
+      "order": 10,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-gifts",
+      "name": "Gifts",
+      "emoji": "🎁",
+      "color": "#10b981",
+      "order": 11,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-subs",
+      "name": "Subscriptions",
+      "emoji": "📱",
+      "color": "#6366f1",
+      "order": 12,
+      "userId": "user-1791607509217-8bm6h"
+    },
+    {
+      "id": "cat-user-1791607509217-8bm6h-cat-other",
+      "name": "Other",
+      "emoji": "💸",
+      "color": "#64748b",
+      "order": 13,
+      "userId": "user-1791607509217-8bm6h"
+    }
+  ],
+  "accounts": [
+    {
+      "id": "acc-cash-1",
+      "userId": "user-demo-001",
+      "name": "Cash",
+      "type": "cash",
+      "balance": 120,
+      "currency": "USD",
+      "isDefault": false
+    },
+    {
+      "id": "acc-bank-1",
+      "userId": "user-demo-001",
+      "name": "Chase Checking",
+      "type": "bank",
+      "balance": 3450,
+      "currency": "USD",
+      "isDefault": false
+    },
+    {
+      "id": "acc-debit-1",
+      "userId": "user-demo-001",
+      "name": "Debit Card",
+      "type": "debit",
+      "balance": 850,
+      "currency": "USD",
+      "isDefault": true
+    },
+    {
+      "id": "acc-credit-1",
+      "userId": "user-demo-001",
+      "name": "Credit Card",
+      "type": "credit",
+      "balance": 2100,
+      "currency": "USD",
+      "isDefault": false
+    },
+    {
+      "id": "acc-user-1791607509217-8bm6h-cash",
+      "userId": "user-1791607509217-8bm6h",
+      "name": "Cash",
+      "type": "cash",
+      "balance": 0,
+      "currency": "INR",
+      "isDefault": false
+    },
+    {
+      "id": "acc-user-1791607509217-8bm6h-bank",
+      "userId": "user-1791607509217-8bm6h",
+      "name": "Bank Account",
+      "type": "bank",
+      "balance": 0,
+      "currency": "INR",
+      "isDefault": false
+    },
+    {
+      "id": "acc-user-1791607509217-8bm6h-debit",
+      "userId": "user-1791607509217-8bm6h",
+      "name": "Debit Card",
+      "type": "debit",
+      "balance": 0,
+      "currency": "INR",
+      "isDefault": true
+    },
+    {
+      "id": "acc-user-1791607509217-8bm6h-credit",
+      "userId": "user-1791607509217-8bm6h",
+      "name": "Credit Card",
+      "type": "credit",
+      "balance": 0,
+      "currency": "INR",
+      "isDefault": false
+    }
+  ],
+  "transactions": [
+    {
+      "id": "tx-1",
+      "userId": "user-demo-001",
+      "amount": 14.5,
+      "currency": "USD",
+      "date": "2026-10-09",
+      "accountId": "acc-debit-1",
+      "accountName": "Debit Card",
+      "categoryId": "cat-food",
+      "categoryName": "Gourmet Food",
+      "categoryEmoji": "🍕",
+      "categoryColor": "#f97316",
+      "description": "Chipotle Burrito Bowl",
+      "merchant": "Chipotle",
+      "customOrder": 0,
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-2",
+      "userId": "user-demo-001",
+      "amount": 68.2,
+      "currency": "USD",
+      "date": "2026-10-08",
+      "accountId": "acc-debit-1",
+      "accountName": "Debit Card",
+      "categoryId": "cat-groceries",
+      "categoryName": "Groceries",
+      "categoryEmoji": "🛒",
+      "categoryColor": "#16a34a",
+      "description": "Trader Joe's weekly haul",
+      "merchant": "Trader Joe's",
+      "customOrder": 1,
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-3",
+      "userId": "user-demo-001",
+      "amount": 4.75,
+      "currency": "USD",
+      "date": "2026-10-08",
+      "accountId": "acc-cash-1",
+      "accountName": "Cash",
+      "categoryId": "cat-food",
+      "categoryName": "Gourmet Food",
+      "categoryEmoji": "🍕",
+      "categoryColor": "#f97316",
+      "description": "Morning Oat Latte",
+      "merchant": "Blue Bottle Coffee",
+      "customOrder": 2,
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-4",
+      "userId": "user-demo-001",
+      "amount": 22.4,
+      "currency": "USD",
+      "date": "2026-10-07",
+      "accountId": "acc-credit-1",
+      "accountName": "Credit Card",
+      "categoryId": "cat-transport",
+      "categoryName": "Transport",
+      "categoryEmoji": "🚗",
+      "categoryColor": "#2563eb",
+      "description": "Uber ride downtown",
+      "merchant": "Uber",
+      "customOrder": 3,
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-5",
+      "userId": "user-demo-001",
+      "amount": 15.99,
+      "currency": "USD",
+      "date": "2026-10-06",
+      "accountId": "acc-credit-1",
+      "accountName": "Credit Card",
+      "categoryId": "cat-subs",
+      "categoryName": "Subscriptions",
+      "categoryEmoji": "📱",
+      "categoryColor": "#6366f1",
+      "description": "Netflix Monthly",
+      "merchant": "Netflix",
+      "customOrder": 4,
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-6",
+      "userId": "user-demo-001",
+      "amount": 285,
+      "currency": "USD",
+      "date": "2026-10-05",
+      "accountId": "acc-credit-1",
+      "accountName": "Credit Card",
+      "categoryId": "cat-shopping",
+      "categoryName": "Shopping",
+      "categoryEmoji": "🛍️",
+      "categoryColor": "#ec4899",
+      "description": "Winter Jacket & Boots",
+      "merchant": "Patagonia",
+      "customOrder": 5,
+      "anomaly": {
+        "isAnomaly": true,
+        "score": 88,
+        "severity": "high",
+        "reason": "Spend is 3.8x above your typical Shopping median of $75.00",
+        "baselineMedian": 75,
+        "baselineIQR": 45,
+        "reviewStatus": "unreviewed"
+      },
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-7",
+      "userId": "user-demo-001",
+      "amount": 45,
+      "currency": "USD",
+      "date": "2026-10-04",
+      "accountId": "acc-bank-1",
+      "accountName": "Chase Checking",
+      "categoryId": "cat-bills",
+      "categoryName": "Bills & Utilities",
+      "categoryEmoji": "💡",
+      "categoryColor": "#06b6d4",
+      "description": "Fiber Home Internet",
+      "merchant": "Sonic Internet",
+      "customOrder": 6,
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-8",
+      "userId": "user-demo-001",
+      "amount": 18,
+      "currency": "USD",
+      "date": "2026-10-03",
+      "accountId": "acc-debit-1",
+      "accountName": "Debit Card",
+      "categoryId": "cat-entertainment",
+      "categoryName": "Entertainment",
+      "categoryEmoji": "🎬",
+      "categoryColor": "#a855f7",
+      "description": "Cinema ticket",
+      "merchant": "AMC Theatres",
+      "customOrder": 7,
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-9",
+      "userId": "user-demo-001",
+      "amount": 850,
+      "currency": "USD",
+      "date": "2026-10-01",
+      "accountId": "acc-bank-1",
+      "accountName": "Chase Checking",
+      "categoryId": "cat-housing",
+      "categoryName": "Rent & Housing",
+      "categoryEmoji": "🏠",
+      "categoryColor": "#d97706",
+      "description": "Monthly apartment share",
+      "merchant": "Landlord Property Mgmt",
+      "customOrder": 8,
+      "createdAt": "2026-10-09T19:54:45.688Z"
+    },
+    {
+      "id": "tx-1791575705692-xxbn",
+      "userId": "user-demo-001",
+      "amount": 34.2,
+      "currency": "USD",
+      "date": "2026-10-09",
+      "accountId": "acc-debit-1",
+      "accountName": "Debit Card",
+      "categoryId": "cat-food",
+      "categoryName": "Gourmet Food",
+      "categoryEmoji": "🍕",
+      "categoryColor": "#f97316",
+      "description": "Pho Dinner",
+      "customOrder": 9,
+      "createdAt": "2026-10-09T19:55:05.692Z"
+    },
+    {
+      "id": "tx-1791607595233-5a3f",
+      "userId": "user-1791607509217-8bm6h",
+      "amount": 500,
+      "currency": "INR",
+      "date": "2026-10-10",
+      "accountId": "acc-user-1791607509217-8bm6h-cash",
+      "accountName": "Cash",
+      "categoryId": "cat-user-1791607509217-8bm6h-cat-food",
+      "categoryName": "Food & Dining",
+      "categoryEmoji": "🍔",
+      "categoryColor": "#f97316",
+      "customOrder": 0,
+      "createdAt": "2026-10-10T04:46:35.233Z"
+    },
+    {
+      "id": "tx-1791607647635-hwa8",
+      "userId": "user-1791607509217-8bm6h",
+      "amount": 1000,
+      "currency": "INR",
+      "date": "2026-10-10",
+      "accountId": "acc-user-1791607509217-8bm6h-bank",
+      "accountName": "Bank Account",
+      "categoryId": "cat-user-1791607509217-8bm6h-cat-shopping",
+      "categoryName": "Shopping",
+      "categoryEmoji": "🛍️",
+      "categoryColor": "#ec4899",
+      "customOrder": 1,
+      "createdAt": "2026-10-10T04:47:27.635Z"
+    }
+  ],
+  "budgets": [
+    {
+      "id": "b-total",
+      "userId": "user-demo-001",
+      "amount": 1500,
+      "period": "monthly"
+    },
+    {
+      "id": "b-food",
+      "userId": "user-demo-001",
+      "categoryId": "cat-food",
+      "amount": 350,
+      "period": "monthly"
+    },
+    {
+      "id": "b-groceries",
+      "userId": "user-demo-001",
+      "categoryId": "cat-groceries",
+      "amount": 300,
+      "period": "monthly"
+    },
+    {
+      "id": "b-transport",
+      "userId": "user-demo-001",
+      "categoryId": "cat-transport",
+      "amount": 150,
+      "period": "monthly"
+    },
+    {
+      "id": "b-1791607706826",
+      "userId": "user-1791607509217-8bm6h",
+      "categoryId": "cat-user-1791607509217-8bm6h-cat-food",
+      "amount": 2000,
+      "period": "monthly"
+    }
+  ],
+  "friendBalances": [
+    {
+      "id": "fb-1",
+      "userId": "user-demo-001",
+      "friendName": "Samira Chen",
+      "amount": 32.5,
+      "notes": "Dinner at Ramen Nagi split",
+      "lastUpdated": "2026-10-07"
+    },
+    {
+      "id": "fb-2",
+      "userId": "user-demo-001",
+      "friendName": "Marcus Cole",
+      "amount": -15,
+      "notes": "Owe for concert parking",
+      "lastUpdated": "2026-10-04"
+    }
+  ]
+}
